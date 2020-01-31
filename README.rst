@@ -56,7 +56,26 @@ To install in a virtual environment in your current project:
 Usage Example
 =============
 
-.. todo:: Add a quick, simple example. It and other examples should live in the examples folder and be included in docs/examples.rst.
+.. code-block:: python3
+
+    import time
+    import board
+    import busio
+    import adafruit_apds9500
+    from adafruit_apds9500 import Gesture
+
+    i2c = busio.I2C(board.SCL, board.SDA)
+
+    apds = adafruit_apds9500.APDS9500(i2c)
+    while True:
+        gesture_reading = apds.gestures
+        if len(gesture_reading) == 0:
+            continue
+        for gesture in gesture_reading:
+            print("\t", Gesture.string[gesture], "Gesture Detected")
+        print("")
+    time.sleep(.1)
+
 
 Contributing
 ============

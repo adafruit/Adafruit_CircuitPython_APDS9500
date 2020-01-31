@@ -125,7 +125,7 @@ APDS9500_R_TimeDelayNum = 0x8D
 APDS9500_R_Disable45Degree = 0x8E
 APDS9500_R_XtoYGain = 0x8F
 APDS9500_R_NoMotionCountThd = 0x90
-APDS9500_R_NoObjectCountThd = 0x91 
+APDS9500_R_NoObjectCountThd = 0x91
 APDS9500_R_NormalizedImageWidth = 0x92
 APDS9500_R_XDirectionThd = 0x93
 APDS9500_R_YDirectionThd = 0x94
@@ -250,11 +250,11 @@ class GestureResult(CV):
     pass #pylint: disable=unnecessary-pass
 
 GestureResult.add_values((
-    ('UP',  1, "Up", None),
-    ('DOWN',  2, "Down", None),
+    ('UP', 1, "Up", None),
+    ('DOWN', 2, "Down", None),
     ('LEFT', 3, "Left", None),
     ('RIGHT', 4, "Right", None),
-    ('FORWARD',  5, "Forward", None),
+    ('FORWARD', 5, "Forward", None),
     ('BACKWARD', 6, "Backward", None),
     ('CLOCKWISE', 7, "Clockwise", None),
     ('COUNTERCLOCKWISE', 8, "Counterclockwise", None),
@@ -267,11 +267,11 @@ class Gesture(CV):
 
 
 Gesture.add_values((
-    ('UP',  0x01, "Up", None),
-    ('DOWN',  0x02, "Down", None),
+    ('UP', 0x01, "Up", None),
+    ('DOWN', 0x02, "Down", None),
     ('LEFT', 0x04, "Left", None),
     ('RIGHT', 0x08, "Right", None),
-    ('FORWARD',  0x10, "Forward", None),
+    ('FORWARD', 0x10, "Forward", None),
     ('BACKWARD', 0x20, "Backward", None),
     ('CLOCKWISE', 0x40, "Clockwise", None),
     ('COUNTERCLOCKWISE', 0x80, "Counterclockwise", None),
@@ -365,65 +365,65 @@ class APDS9500:
         self.cursor_clamp_left = 0x7
         self.cursor_clamp_right = 0x17
         self.cursor_clamp_up = 0x6
-        
+
         self.int2_en = 0x1
-        
+
         self.ae_led_off_ub = 0x2D
         self.ae_led_off_lb = 0xF
         self.ae_exposure_ub_l = 0x3C
         self.ae_exposure_ub_h = 0x0
         self.ae_exposure_lb_l = 0x1E
         self.ae_gain_lb = 0x20
-        
+
         self.manual = 0x10
         self.unkown_1 = 0x10
         self.unknown_2 = 0x27
-        
+
         self.apds9500_input_mode_gpio_0_1 = 0x42
         self.apds9500_input_mode_gpio_2_3 = 0x44
         self.apds9500_input_mode_int = 0x4
-        
+
         self.cursor_object_size_th = 0x1
-        
+
         self.no_motion_count_thd = 0x6
-        
+
         self.z_direction_thd = 0xA
         self.z_direction_xy_thd = 0xC
         self.z_direction_angle_thd = 0x5
-        
+
         self.rotate_xy_thd = 0x14
-        
+
         self.filter = 0x3F
         self.filter_image = 0x19
-        
+
         self.yto_z_sum = 0x19
         self.yto_z_factor = 0xB
-        
+
         self.filter_length = 0x3
-        
+
         self.wave_thd = 0x64
         self.abort_count_thd = 0x21
         self.reg_bank_set = 0x1
-        
+
         self.cmd_h_start = 0xF
         self.cmd_v_start = 0x10
         self.cmd_hv = 0x2
-        
+
         self.lens_shading_comp_en_h = 0x1
         self.offest_y = 0x39
         self.lsc = 0x7F
         self.lsft = 0x8
         self.cursor_clamp_center_y_h = 0xFF
         self.unknown_1 = 0x3D
-        
+
         self.idle_time_l = 0x96
         self.idle_time_sleep_1_l = 0x97
         self.idle_time_sleep_2_l = 0xCD
         self.idle_time_sleep_2_h = 0x1
-        
+
         self.object_time_2_l = 0x2C
         self.object_time_2_h = 0x1
-        
+
         self.tg_en_h = 0x1
         self.auto_sleep_mode = 0x35
         self.wake_up_sig_sel = 0x0
@@ -434,12 +434,13 @@ class APDS9500:
 
     @property
     def gestures(self):
+        """Returns a dictionary of gestures that were detected. Results are"""
         #pylint:disable=no-member
-        detected_gestures = {}
+        detected_gestures = []
         gesture_flag = self.int_flag_1
 
-        for g_flag in Gesture.string.keys():
+        for g_flag in Gesture.string:
             if gesture_flag & g_flag:
-                detected_gestures[g_flag] = True
+                detected_gestures.append(g_flag)
 
         return detected_gestures
