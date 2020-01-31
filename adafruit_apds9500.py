@@ -22,9 +22,7 @@
 """
 `adafruit_apds9500`
 ================================================================================
-
 Library for the APDS9500 Gesture Sensor
-
 
 * Author(s): Bryan Siepert
 
@@ -32,61 +30,29 @@ Implementation Notes
 --------------------
 
 **Hardware:**
-.. todo:: Update the PID for the below and add links to any specific hardware product page(s), or category page(s)
 
 * Adafruit's APDS9500 Breakout: https://adafruit.com/product/44XX
 
 **Software and Dependencies:**
 
-* Adafruit CircuitPython firmware for the supported boards:
-  https://circuitpython.org/downloads* Adafruit's Bus Device library: https://github.com/adafruit/Adafruit_CircuitPython_BusDevice* Adafruit's Register library: https://github.com/adafruit/Adafruit_CircuitPython_Register"""
+* Adafruit CircuitPython firmware for the supported boards: https://circuitpython.org/downloads
+* Adafruit's Bus Device library: https://github.com/adafruit/Adafruit_CircuitPython_BusDevice
+* Adafruit's Register library: https://github.com/adafruit/Adafruit_CircuitPython_Register
+"""
 
 __version__ = "0.0.0-auto.0"
 __repo__ = "https://github.com/adafruit/Adafruit_CircuitPython_APDS9500.git"
+import adafruit_bus_device.i2c_device as i2c_device
 
-# Common imports; remove if unused or pylint will complain
-from time import sleepimport adafruit_bus_device.i2c_device as i2c_devicefrom adafruit_register.i2c_struct import UnaryStruct, ROUnaryStruct
-from adafruit_register.i2c_struct_array import StructArray
-from adafruit_register.i2c_bit import RWBit
-from adafruit_register.i2c_bits import RWBits_APDS9500_DEFAULT_ADDRESS) = 0x00 # APDS9500 default i2c address
-_APDS9500_DEVICE_ID = 0xFF # APDS9500 device identifier
+from adafruit_register.i2c_struct import UnaryStruct
 
-#pylint: enable=bad-whitespace
-class CV:
-    """struct helper"""
+#pylint:disable=invalid-name
+#pylint:disable=too-many-instance-attributes
+#pylint:disable=too-many-statements
+#pylint:disable=too-few-public-methods
 
-    @classmethod
-    def add_values(cls, value_tuples):
-        """Add CV values to the class"""
-        cls.string = {}
-        cls.lsb = {}
-
-        for value_tuple in value_tuples:
-            name, value, string, lsb = value_tuple
-            setattr(cls, name, value)
-            cls.string[value] = string
-            cls.lsb[value] = lsb
-
-    @classmethod
-    def is_valid(cls, value):
-        """Validate that a given value is a member"""
-        return value in cls.string
-
-class Example(CV):
-    """Options for ``example``"""
-    pass #pylint: disable=unnecessary-pass
-
-# attribute name, value, string, lsb value
-Example.add_values((
-    ('RANGE_4G', 0, 4, 8192),
-    ('RANGE_8G', 1, 8, 4096.0),
-    ('RANGE_16G', 2, 16, 2048),
-    ('RANGE_30G', 3, 30, 1024),
-))
-
-class APDS9500:
-
-
+# _APDS9500_DEFAULT_ADDRESS = 0x00 # APDS9500 default i2c address
+# _APDS9500_DEVICE_ID = 0xFF # APDS9500 device identifier
 
 
 APDS9500_R_RegBankSet = 0xEF
@@ -222,9 +188,9 @@ APDS9500_unknown_1 = 0x5E
 APDS9500_unknown_2 = 0x60
 
 # bank 1
-# Bank 1 */	
-	
-# Image size settings */	
+# Bank 1 */
+
+# Image size settings */
 APDS9500_Cmd_HSize = 0x00
 APDS9500_Cmd_VSize = 0x01
 APDS9500_Cmd_HStart = 0x02
@@ -254,12 +220,11 @@ APDS9500_R_TG_POWERON_WAKEUP_TIME = 0x71
 APDS9500_R_TG_EnH = 0x72
 APDS9500_R_Auto_SLEEP_Mode = 0x73
 APDS9500_R_Wake_Up_Sig_Sel = 0x74
-	
-# Image Controls */	
-APDS9500_R_SRAM_Read_EnH = 0x77
 
-from adafruit_register.i2c_struct import UnaryStruct
-import adafruit_bus_device.i2c_device as i2cdevice
+# Image Controls */
+APDS9500_R_SRAM_Read_EnH = 0x77
+APDS9500_DEFAULT_ADDRESS = 0x73
+
 
 class APDS9500:
     """Library for the APDS9500 Gesture Sensor.
@@ -268,16 +233,13 @@ class APDS9500:
         :param address: The I2C slave address of the sensor
 
     """
-    # endian/format helper
-    # b signed, 1 byte :: B unsigned 1 byte
-    # h signed, 2 bytes :: H unsigned 2 bytes
-    _device_id = ROUnaryStruct(_APDS9500_DEVICE_ID, ">B")
-    _raw_example_data = Struct(_APDS9500_EXAMPLE_XOUT_H, ">hhh")
-    _bank = RWBits(2, _APDS9500_REG_BANK_SEL, 4)
-    _reset = RWBit(_APDS9500_PWR_MGMT_1, 7)
 
-
-
+    # # endian/format helper
+    # # b signed, 1 byte :: B unsigned 1 byte
+    # # h signed, 2 bytes :: H unsigned 2 bytes
+    # _raw_example_data = Struct(_APDS9500_EXAMPLE_XOUT_H, ">hhh")
+    # _bank = RWBits(2, _APDS9500_REG_BANK_SEL, 4)
+    # _reset = RWBit(_APDS9500_PWR_MGMT_1, 7)
 
     reg_bank_set = UnaryStruct(APDS9500_R_RegBankSet, ">B")
     cursor_clamp_left = UnaryStruct(APDS9500_R_CursorClampLeft, ">B")
@@ -337,105 +299,69 @@ class APDS9500:
     int_flag_1 = UnaryStruct(APDS9500_Int_Flag_1, ">B")
     int_flag_2 = UnaryStruct(APDS9500_Int_Flag_2, ">B")
 
-
-
-    def __init__(self, i2c_bus, address=_APDS9500_DEFAULT_ADDRESS):
+    def __init__(self, i2c_bus, address=APDS9500_DEFAULT_ADDRESS):
         self.i2c_device = i2c_device.I2CDevice(i2c_bus, address)
 
-        if self._device_id != _APDS9500_DEVICE_ID:
-            raise RuntimeError("Failed to find APDS9500 - check your wiring!")
+        self.reg_bank_set = 0x00
+        self.reg_bank_set = 0x00
+        self.reg_bank_set = 0x0
+        self.cursor_clamp_left = 0x7
+        self.cursor_clamp_right = 0x17
+        self.cursor_clamp_up = 0x6
+        self.int2_en = 0x1
+        self.ae_led_off_ub = 0x2D
+        self.ae_led_off_lb = 0xF
+        self.ae_exposure_ub_l = 0x3C
+        self.ae_exposure_ub_h = 0x0
+        self.ae_exposure_lb_l = 0x1E
+        self.ae_gain_lb = 0x20
+        self.manual = 0x10
+        self.unkown_1 = 0x10
+        self.unknown_2 = 0x27
+        self.apds9500_input_mode_gpio_0_1 = 0x42
+        self.apds9500_input_mode_gpio_2_3 = 0x44
+        self.apds9500_input_mode_int = 0x4
+        self.cursor_object_size_th = 0x1
+        self.no_motion_count_thd = 0x6
+        self.z_direction_thd = 0xA
+        self.z_direction_xy_thd = 0xC
+        self.z_direction_angle_thd = 0x5
+        self.rotate_xy_thd = 0x14
+        self.filter = 0x3F
+        self.filter_image = 0x19
+        self.yto_z_sum = 0x19
+        self.yto_z_factor = 0xB
+        self.filter_length = 0x3
+        self.wave_thd = 0x64
+        self.abort_count_thd = 0x21
+        self.reg_bank_set = 0x1
+        self.cmd_h_start = 0xF
+        self.cmd_v_start = 0x10
+        self.cmd_hv = 0x2
+        self.lens_shading_comp_en_h = 0x1
+        self.offest_y = 0x39
+        self.lsc = 0x7F
+        self.lsft = 0x8
+        self.cursor_clamp_center_y_h = 0xFF
+        self.unknown_1 = 0x3D
+        self.idle_time_l = 0x96
+        self.idle_time_sleep_1_l = 0x97
+        self.idle_time_sleep_2_l = 0xCD
+        self.idle_time_sleep_2_h = 0x1
+        self.object_time_2_l = 0x2C
+        self.object_time_2_h = 0x1
+        self.tg_en_h = 0x1
+        self.auto_sleep_mode = 0x35
+        self.wake_up_sig_sel = 0x0
+        self.sram_read_en_h = 0x1
 
-        self.reset()
+        self.reg_bank_set = 0x00
+        enabled = self.gestures_enabled
+        print("Enabled gestures: %s" % bin(enabled))
+        # writeByte(APDS9500_ADDRESS, APDS9500_R_RegBankSet, 0x00);         // select bank 0
 
-    @property
-    def example(self):
-        """An example"""
-        return self._example
-
-    @example.setter
-    def example(self, value):
-        if not Example.is_valid(value):
-            raise AttributeError("example must be an `Example`")
-
-        self._example = value
-
-
-
-
-def __init__(self, i2c_bus, address=0x73):
-    self.i2c_device = i2cdevice.I2CDevice(i2c_bus, address)
-
-
-    def __init__(self, i2c_bus, address=_APDS9500_DEFAULT_ADDRESS):
-        self.i2c_device = i2c_device.I2CDevice(i2c_bus, address)
-
-        if self._device_id != _APDS9500_DEVICE_ID:
-            raise RuntimeError("Failed to find APDS9500 - check your wiring!")
-
-        self.reset()
-
-
-
-    self.reg_bank_set = 0x00
-    self.reg_bank_set = 0x00
-    self.reg_bank_set = 0x0
-    self.cursor_clamp_left = 0x7
-    self.cursor_clamp_right = 0x17
-    self.cursor_clamp_up = 0x6
-    self.int2_en = 0x1
-    self.ae_led_off_ub = 0x2d
-    self.ae_led_off_lb = 0xf
-    self.ae_exposure_ub_l = 0x3c
-    self.ae_exposure_ub_h = 0x0
-    self.ae_exposure_lb_l = 0x1e
-    self.ae_gain_lb = 0x20
-    self.manual = 0x10
-    self.unkown_1 = 0x10
-    self.unknown_2 = 0x27
-    self.apds9500_input_mode_gpio_0_1 = 0x42
-    self.apds9500_input_mode_gpio_2_3 = 0x44
-    self.apds9500_input_mode_int = 0x4
-    self.cursor_object_size_th = 0x1
-    self.no_motion_count_thd = 0x6
-    self.z_direction_thd = 0xa
-    self.z_direction_xy_thd = 0xc
-    self.z_direction_angle_thd = 0x5
-    self.rotate_xy_thd = 0x14
-    self.filter = 0x3f
-    self.filter_image = 0x19
-    self.yto_z_sum = 0x19
-    self.yto_z_factor = 0xb
-    self.filter_length = 0x3
-    self.wave_thd = 0x64
-    self.abort_count_thd = 0x21
-    self.reg_bank_set = 0x1
-    self.cmd_h_start = 0xf
-    self.cmd_v_start = 0x10
-    self.cmd_hv = 0x2
-    self.lens_shading_comp_en_h = 0x1
-    self.offest_y = 0x39
-    self.lsc = 0x7f
-    self.lsft = 0x8
-    self.cursor_clamp_center_y_h = 0xff
-    self.unknown_1 = 0x3d
-    self.idle_time_l = 0x96
-    self.idle_time_sleep_1_l = 0x97
-    self.idle_time_sleep_2_l = 0xcd
-    self.idle_time_sleep_2_h = 0x1
-    self.object_time_2_l = 0x2c
-    self.object_time_2_h = 0x1
-    self.tg_en_h = 0x1
-    self.auto_sleep_mode = 0x35
-    self.wake_up_sig_sel = 0x0
-    self.sram_read_en_h = 0x1
-
-    self.reg_bank_set = 0x00
-    enabled = self.gestures_enabled
-    print("Enabled gestures: %s"%bin(enabled))
-    # writeByte(APDS9500_ADDRESS, APDS9500_R_RegBankSet, 0x00);         // select bank 0
-
-    # getEnabled = readByte(APDS9500_ADDRESS, APDS9500_R_GestureDetEn);
-    # if(getEnabled & 0x10) Serial.println("ROTATE gesture detection enabled");
-    # if(getEnabled & 0x20) Serial.println("BACKWARD and FORWARD gesture detection enabled");
-    # if(getEnabled & 0x40) Serial.println("UP and DOWN gesture detection enabled");
-    # if(getEnabled & 0x80) Serial.println("LEFT and RIGHT gesture detection enabled");
+        # getEnabled = readByte(APDS9500_ADDRESS, APDS9500_R_GestureDetEn);
+        # if(getEnabled & 0x10) Serial.println("ROTATE gesture detection enabled");
+        # if(getEnabled & 0x20) Serial.println("BACKWARD and FORWARD gesture detection enabled");
+        # if(getEnabled & 0x40) Serial.println("UP and DOWN gesture detection enabled");
+        # if(getEnabled & 0x80) Serial.println("LEFT and RIGHT gesture detection enabled");
