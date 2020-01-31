@@ -125,7 +125,7 @@ APDS9500_R_TimeDelayNum = 0x8D
 APDS9500_R_Disable45Degree = 0x8E
 APDS9500_R_XtoYGain = 0x8F
 APDS9500_R_NoMotionCountThd = 0x90
-APDS9500_R_NoObjectCountThd = 0x91
+APDS9500_R_NoObjectCountThd = 0x91 
 APDS9500_R_NormalizedImageWidth = 0x92
 APDS9500_R_XDirectionThd = 0x93
 APDS9500_R_YDirectionThd = 0x94
@@ -433,23 +433,13 @@ class APDS9500:
 
 
     @property
-    def gesture(self):
+    def gestures(self):
+        #pylint:disable=no-member
         detected_gestures = {}
         gesture_flag = self.int_flag_1
 
-        if gesture_flag & Gesture.UP:
-            detected_gestures[Gesture.UP] = True
-        if gesture_flag & Gesture.DOWN:
-            detected_gestures[Gesture.DOWN] = True
-        if gesture_flag & Gesture.LEFT:
-            detected_gestures[Gesture.LEFT] = True
-        if gesture_flag & Gesture.RIGHT:
-            detected_gestures[Gesture.RIGHT] = True
-        if gesture_flag & Gesture.FORWARD:
-            detected_gestures[Gesture.FORWARD] = True
-        if gesture_flag & Gesture.BACKWARD:
-            detected_gestures[Gesture.BACKWARD] = True
-        if gesture_flag & Gesture.CLOCKWISE:
-            detected_gestures[Gesture.CLOCKWISE] = True
+        for g_flag in Gesture.string.keys():
+            if gesture_flag & g_flag:
+                detected_gestures[g_flag] = True
 
         return detected_gestures
