@@ -9,7 +9,7 @@ i2c = busio.I2C(board.SCL, board.SDA)
 apds = adafruit_apds9500.APDS9500(i2c)
 while True:
     gesture_reading = apds.gestures
-    if len(gesture_reading) == 0:
+    if not gesture_reading:
         continue
     for gesture in gesture_reading:
         print("\t", Gesture.string[gesture], "Gesture Detected")
