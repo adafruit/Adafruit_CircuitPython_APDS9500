@@ -305,51 +305,69 @@ class APDS9500:
         self.reg_bank_set = 0x00
         self.reg_bank_set = 0x00
         self.reg_bank_set = 0x0
+
         self.cursor_clamp_left = 0x7
         self.cursor_clamp_right = 0x17
         self.cursor_clamp_up = 0x6
+        
         self.int2_en = 0x1
+        
         self.ae_led_off_ub = 0x2D
         self.ae_led_off_lb = 0xF
         self.ae_exposure_ub_l = 0x3C
         self.ae_exposure_ub_h = 0x0
         self.ae_exposure_lb_l = 0x1E
         self.ae_gain_lb = 0x20
+        
         self.manual = 0x10
         self.unkown_1 = 0x10
         self.unknown_2 = 0x27
+        
         self.apds9500_input_mode_gpio_0_1 = 0x42
         self.apds9500_input_mode_gpio_2_3 = 0x44
         self.apds9500_input_mode_int = 0x4
+        
         self.cursor_object_size_th = 0x1
+        
         self.no_motion_count_thd = 0x6
+        
         self.z_direction_thd = 0xA
         self.z_direction_xy_thd = 0xC
         self.z_direction_angle_thd = 0x5
+        
         self.rotate_xy_thd = 0x14
+        
         self.filter = 0x3F
         self.filter_image = 0x19
+        
         self.yto_z_sum = 0x19
         self.yto_z_factor = 0xB
+        
         self.filter_length = 0x3
+        
         self.wave_thd = 0x64
         self.abort_count_thd = 0x21
         self.reg_bank_set = 0x1
+        
         self.cmd_h_start = 0xF
         self.cmd_v_start = 0x10
         self.cmd_hv = 0x2
+        
         self.lens_shading_comp_en_h = 0x1
         self.offest_y = 0x39
         self.lsc = 0x7F
         self.lsft = 0x8
         self.cursor_clamp_center_y_h = 0xFF
         self.unknown_1 = 0x3D
+        
         self.idle_time_l = 0x96
         self.idle_time_sleep_1_l = 0x97
         self.idle_time_sleep_2_l = 0xCD
         self.idle_time_sleep_2_h = 0x1
+        
         self.object_time_2_l = 0x2C
         self.object_time_2_h = 0x1
+        
         self.tg_en_h = 0x1
         self.auto_sleep_mode = 0x35
         self.wake_up_sig_sel = 0x0
