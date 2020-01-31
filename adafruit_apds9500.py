@@ -43,8 +43,8 @@ Implementation Notes
 __version__ = "0.0.0-auto.0"
 __repo__ = "https://github.com/adafruit/Adafruit_CircuitPython_APDS9500.git"
 import adafruit_bus_device.i2c_device as i2c_device
-
 from adafruit_register.i2c_struct import UnaryStruct
+from adafruit_register.i2c_bits import ROBits
 
 #pylint:disable=invalid-name
 #pylint:disable=too-many-instance-attributes
@@ -225,6 +225,58 @@ APDS9500_R_Wake_Up_Sig_Sel = 0x74
 APDS9500_R_SRAM_Read_EnH = 0x77
 APDS9500_DEFAULT_ADDRESS = 0x73
 
+class CV:
+    """struct helper"""
+
+    @classmethod
+    def add_values(cls, value_tuples):
+        "creates CV entires"
+        cls.string = {}
+        cls.lsb = {}
+
+        for value_tuple in value_tuples:
+            name, value, string, lsb = value_tuple
+            setattr(cls, name, value)
+            cls.string[value] = string
+            cls.lsb[value] = lsb
+
+    @classmethod
+    def is_valid(cls, value):
+        "Returns true if the given value is a member of the CV"
+        return value in cls.string
+
+class GestureResult(CV):
+    """Possible results for ``gesture``"""
+    pass #pylint: disable=unnecessary-pass
+
+GestureResult.add_values((
+    ('UP',  1, "Up", None),
+    ('DOWN',  2, "Down", None),
+    ('LEFT', 3, "Left", None),
+    ('RIGHT', 4, "Right", None),
+    ('FORWARD',  5, "Forward", None),
+    ('BACKWARD', 6, "Backward", None),
+    ('CLOCKWISE', 7, "Clockwise", None),
+    ('COUNTERCLOCKWISE', 8, "Counterclockwise", None),
+    ('WAVE', 9, "Wave", None)
+))
+
+class Gesture(CV):
+    """Possible results for ``gesture``"""
+    pass #pylint: disable=unnecessary-pass
+
+
+Gesture.add_values((
+    ('UP',  0x01, "Up", None),
+    ('DOWN',  0x02, "Down", None),
+    ('LEFT', 0x04, "Left", None),
+    ('RIGHT', 0x08, "Right", None),
+    ('FORWARD',  0x10, "Forward", None),
+    ('BACKWARD', 0x20, "Backward", None),
+    ('CLOCKWISE', 0x40, "Clockwise", None),
+    ('COUNTERCLOCKWISE', 0x80, "Counterclockwise", None),
+))
+
 
 class APDS9500:
     """Library for the APDS9500 Gesture Sensor.
@@ -295,7 +347,11 @@ class APDS9500:
 
     # readers
     gestures_enabled = UnaryStruct(APDS9500_R_GestureDetEn, ">B")
-    gesture_result = UnaryStruct(APDS9500_GestureResult, ">B")
+    gesture_result_register = UnaryStruct(APDS9500_GestureResult, ">B")
+    gesture_result = ROBits(4, APDS9500_GestureResult, 0)
+
+    # 0 GestureResult 0xB6 3:0 - R Gesture result
+
     int_flag_1 = UnaryStruct(APDS9500_Int_Flag_1, ">B")
     int_flag_2 = UnaryStruct(APDS9500_Int_Flag_2, ">B")
 
@@ -374,12 +430,26 @@ class APDS9500:
         self.sram_read_en_h = 0x1
 
         self.reg_bank_set = 0x00
-        enabled = self.gestures_enabled
-        print("Enabled gestures: %s" % bin(enabled))
-        # writeByte(APDS9500_ADDRESS, APDS9500_R_RegBankSet, 0x00);         // select bank 0
 
-        # getEnabled = readByte(APDS9500_ADDRESS, APDS9500_R_GestureDetEn);
-        # if(getEnabled & 0x10) Serial.println("ROTATE gesture detection enabled");
-        # if(getEnabled & 0x20) Serial.println("BACKWARD and FORWARD gesture detection enabled");
-        # if(getEnabled & 0x40) Serial.println("UP and DOWN gesture detection enabled");
-        # if(getEnabled & 0x80) Serial.println("LEFT and RIGHT gesture detection enabled");
+
+    @property
+    def gesture(self):
+        detected_gestures = {}
+        gesture_flag = self.int_flag_1
+
+        if gesture_flag & Gesture.UP:
+            detected_gestures[Gesture.UP] = True
+        if gesture_flag & Gesture.DOWN:
+            detected_gestures[Gesture.DOWN] = True
+        if gesture_flag & Gesture.LEFT:
+            detected_gestures[Gesture.LEFT] = True
+        if gesture_flag & Gesture.RIGHT:
+            detected_gestures[Gesture.RIGHT] = True
+        if gesture_flag & Gesture.FORWARD:
+            detected_gestures[Gesture.FORWARD] = True
+        if gesture_flag & Gesture.BACKWARD:
+            detected_gestures[Gesture.BACKWARD] = True
+        if gesture_flag & Gesture.CLOCKWISE:
+            detected_gestures[Gesture.CLOCKWISE] = True
+
+        return detected_gestures
