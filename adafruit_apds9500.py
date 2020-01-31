@@ -434,12 +434,12 @@ class APDS9500:
 
     @property
     def gestures(self):
-        """Returns a dictionary of gestures that were detected. Results are"""
+        """Returns a list of gestures that were detected. Results are `Gesture` types"""
         #pylint:disable=no-member
         detected_gestures = []
         gesture_flag = self.int_flag_1
 
-        for g_flag in Gesture.string:
+        for g_flag in Gesture.string.keys():
             if gesture_flag & g_flag:
                 detected_gestures.append(g_flag)
 
