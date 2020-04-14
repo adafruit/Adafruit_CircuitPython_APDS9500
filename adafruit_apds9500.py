@@ -46,10 +46,10 @@ import adafruit_bus_device.i2c_device as i2c_device
 from adafruit_register.i2c_struct import UnaryStruct
 from adafruit_register.i2c_bits import ROBits
 
-#pylint:disable=invalid-name
-#pylint:disable=too-many-instance-attributes
-#pylint:disable=too-many-statements
-#pylint:disable=too-few-public-methods
+# pylint:disable=invalid-name
+# pylint:disable=too-many-instance-attributes
+# pylint:disable=too-many-statements
+# pylint:disable=too-few-public-methods
 
 # _APDS9500_DEFAULT_ADDRESS = 0x00 # APDS9500 default i2c address
 # _APDS9500_DEVICE_ID = 0xFF # APDS9500 device identifier
@@ -225,6 +225,7 @@ APDS9500_R_Wake_Up_Sig_Sel = 0x74
 APDS9500_R_SRAM_Read_EnH = 0x77
 APDS9500_DEFAULT_ADDRESS = 0x73
 
+
 class CV:
     """struct helper"""
 
@@ -245,37 +246,46 @@ class CV:
         "Returns true if the given value is a member of the CV"
         return value in cls.string
 
+
 class GestureResult(CV):
     """Possible results for ``gesture``"""
-    pass #pylint: disable=unnecessary-pass
 
-GestureResult.add_values((
-    ('UP', 1, "Up", None),
-    ('DOWN', 2, "Down", None),
-    ('LEFT', 3, "Left", None),
-    ('RIGHT', 4, "Right", None),
-    ('FORWARD', 5, "Forward", None),
-    ('BACKWARD', 6, "Backward", None),
-    ('CLOCKWISE', 7, "Clockwise", None),
-    ('COUNTERCLOCKWISE', 8, "Counterclockwise", None),
-    ('WAVE', 9, "Wave", None)
-))
+    pass  # pylint: disable=unnecessary-pass
+
+
+GestureResult.add_values(
+    (
+        ("UP", 1, "Up", None),
+        ("DOWN", 2, "Down", None),
+        ("LEFT", 3, "Left", None),
+        ("RIGHT", 4, "Right", None),
+        ("FORWARD", 5, "Forward", None),
+        ("BACKWARD", 6, "Backward", None),
+        ("CLOCKWISE", 7, "Clockwise", None),
+        ("COUNTERCLOCKWISE", 8, "Counterclockwise", None),
+        ("WAVE", 9, "Wave", None),
+    )
+)
+
 
 class Gesture(CV):
     """Possible results for ``gesture``"""
-    pass #pylint: disable=unnecessary-pass
+
+    pass  # pylint: disable=unnecessary-pass
 
 
-Gesture.add_values((
-    ('UP', 0x01, "Up", None),
-    ('DOWN', 0x02, "Down", None),
-    ('LEFT', 0x04, "Left", None),
-    ('RIGHT', 0x08, "Right", None),
-    ('FORWARD', 0x10, "Forward", None),
-    ('BACKWARD', 0x20, "Backward", None),
-    ('CLOCKWISE', 0x40, "Clockwise", None),
-    ('COUNTERCLOCKWISE', 0x80, "Counterclockwise", None),
-))
+Gesture.add_values(
+    (
+        ("UP", 0x01, "Up", None),
+        ("DOWN", 0x02, "Down", None),
+        ("LEFT", 0x04, "Left", None),
+        ("RIGHT", 0x08, "Right", None),
+        ("FORWARD", 0x10, "Forward", None),
+        ("BACKWARD", 0x20, "Backward", None),
+        ("CLOCKWISE", 0x40, "Clockwise", None),
+        ("COUNTERCLOCKWISE", 0x80, "Counterclockwise", None),
+    )
+)
 
 
 class APDS9500:
@@ -431,11 +441,10 @@ class APDS9500:
 
         self.reg_bank_set = 0x00
 
-
     @property
     def gestures(self):
         """Returns a list of gestures that were detected. Results are `Gesture` types"""
-        #pylint:disable=no-member
+        # pylint:disable=no-member
         detected_gestures = []
         gesture_flag = self.int_flag_1
 
