@@ -14,4 +14,4 @@ while True:
     for gesture in gesture_reading:
         print("\t", Gesture.string[gesture], "Gesture Detected")
     print("")
-    time.sleep(.1)
+    time.sleep(0.1)
