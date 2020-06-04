@@ -333,7 +333,6 @@ class APDS9500:
     filter_length = UnaryStruct(APDS9500_R_FilterLength, ">B")
     wave_thd = UnaryStruct(APDS9500_R_WaveThd, ">B")
     abort_count_thd = UnaryStruct(APDS9500_R_AbortCountThd, ">B")
-    reg_bank_set = UnaryStruct(APDS9500_R_RegBankSet, ">B")
 
     cmd_h_start = UnaryStruct(APDS9500_Cmd_HStart, ">B")
     cmd_v_start = UnaryStruct(APDS9500_Cmd_VStart, ">B")
@@ -343,7 +342,6 @@ class APDS9500:
     lsc = UnaryStruct(APDS9500_R_LSC, ">B")
     lsft = UnaryStruct(APDS9500_R_LSFT, ">B")
     cursor_clamp_center_y_h = UnaryStruct(APDS9500_R_CursorClampCenterY_H, ">B")
-    unknown_1 = UnaryStruct(APDS9500_unknown_1, ">B")
     idle_time_l = UnaryStruct(APDS9500_R_IDLE_TIME_L, ">B")
     idle_time_sleep_1_l = UnaryStruct(APDS9500_R_IDLE_TIME_SLEEP_1_L, ">B")
     idle_time_sleep_2_l = UnaryStruct(APDS9500_R_IDLE_TIME_SLEEP_2_L, ">B")
