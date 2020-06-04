@@ -42,6 +42,7 @@ Implementation Notes
 
 __version__ = "0.0.0-auto.0"
 __repo__ = "https://github.com/adafruit/Adafruit_CircuitPython_APDS9500.git"
+import time
 import adafruit_bus_device.i2c_device as i2c_device
 from adafruit_register.i2c_struct import UnaryStruct
 from adafruit_register.i2c_bits import ROBits
@@ -366,11 +367,13 @@ class APDS9500:
     int_flag_2 = UnaryStruct(APDS9500_Int_Flag_2, ">B")
 
     def __init__(self, i2c_bus, address=APDS9500_DEFAULT_ADDRESS):
-        self.i2c_device = i2c_device.I2CDevice(i2c_bus, address)
+        try:
+            self.i2c_device = i2c_device.I2CDevice(i2c_bus, address)
+        except ValueError:
+            time.sleep(0.1)
+            self.i2c_device = i2c_device.I2CDevice(i2c_bus, address)
 
         self.reg_bank_set = 0x00
-        self.reg_bank_set = 0x00
-        self.reg_bank_set = 0x0
 
         self.cursor_clamp_left = 0x7
         self.cursor_clamp_right = 0x17
