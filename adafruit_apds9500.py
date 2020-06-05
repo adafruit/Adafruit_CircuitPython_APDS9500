@@ -384,7 +384,7 @@ class APDS9500:
         self.ae_gain_lb = 0x20
 
         self.manual = 0x10
-        self.unkown_1 = 0x10
+        self.unknown_1 = 0x10
         self.unknown_2 = 0x27
 
         self.apds9500_input_mode_gpio_0_1 = 0x42
