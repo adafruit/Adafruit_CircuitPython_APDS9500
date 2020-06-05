@@ -369,9 +369,22 @@ class APDS9500:
     def __init__(self, i2c_bus, address=APDS9500_DEFAULT_ADDRESS):
         try:
             self.i2c_device = i2c_device.I2CDevice(i2c_bus, address)
-        except ValueError:
+        except ValueError as val_err:
+            if val_err.args and not val_err.args[0].startswith(
+                "No I2C device at address"
+            ):
+                raise val_err
             time.sleep(0.1)
             self.i2c_device = i2c_device.I2CDevice(i2c_bus, address)
+
+        try:
+            self.reg_bank_set = 0x00
+        # catch errors of they may be due to NACKs and re-raise if they aren't
+        except RuntimeError as run_err:
+            if run_err.args and run_err.args[0] != "I2C slave address was NACK'd":
+                raise run_err
+            time.sleep(0.1)
+            self.reg_bank_set = 0x00
 
         self.reg_bank_set = 0x00
 
