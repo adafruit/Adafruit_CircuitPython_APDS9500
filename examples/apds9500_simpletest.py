@@ -7,6 +7,7 @@ from adafruit_apds9500 import Gesture
 i2c = busio.I2C(board.SCL, board.SDA)
 
 apds = adafruit_apds9500.APDS9500(i2c)
+print("Gesture demo started!")
 while True:
     gesture_reading = apds.gestures
     if not gesture_reading:
